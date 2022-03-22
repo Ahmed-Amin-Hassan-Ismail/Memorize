@@ -9,14 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
     var emojis = ["🚗","✈️","🚀","🚁","🚤","🚕","🚎","🦼","🛴","🛺","🚔","🚠","🚟","🚃","🚝","🚄","🚈","🚂","🚆","🚧","🚏","⛽️","⚓️","🪝","🛳","⛵️"]
-    @State var emojiCount = 1
+    @State var emojiCount = 4
     
     
     var body: some View {
         VStack {
-            HStack {
-                ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
-                    CardView(content: emoji)
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 65, maximum: 100))]) {
+                    ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
+                        CardView(content: emoji)
+                            .aspectRatio(2/3, contentMode: .fit)
+                    }
                 }
             }
             Spacer()
@@ -31,10 +34,12 @@ struct ContentView: View {
             
         }
         .padding(.horizontal)
-        .foregroundColor(.red)
+        
     }
-    
-    
+}
+
+//MARK: - Remove Emoji
+extension ContentView {
     var removeEmoji: some View {
         Button {
             if self.emojiCount > 1 {
@@ -45,7 +50,10 @@ struct ContentView: View {
         }
         
     }
-        
+}
+
+//MARK: - Add Emoji
+extension ContentView {
     var addEmoji: some View {
         Button {
             if self.emojiCount < emojis.count {
@@ -58,9 +66,6 @@ struct ContentView: View {
         }
         
     }
-    
-    
-    
 }
 
 
@@ -75,7 +80,7 @@ struct CardView: View {
                     .fill()
                     .foregroundColor(.white)
                 shape
-                    .stroke(lineWidth: 3)
+                    .strokeBorder(lineWidth: 3)
                 Text(content)
                     .font(.largeTitle)
             } else {
@@ -83,6 +88,7 @@ struct CardView: View {
                     .fill()
             }
         }
+        .foregroundColor(.red)
         .onTapGesture {
             isFaceUp.toggle()
         }
