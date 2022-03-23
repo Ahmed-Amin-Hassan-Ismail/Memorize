@@ -22,16 +22,6 @@ struct ContentView: View {
                     }
                 }
             }
-            Spacer()
-            
-            HStack {
-                removeEmoji
-                Spacer()
-                addEmoji
-            }
-            .font(.largeTitle)
-            .padding(.horizontal)
-            
         }
         .padding(.horizontal)
         
