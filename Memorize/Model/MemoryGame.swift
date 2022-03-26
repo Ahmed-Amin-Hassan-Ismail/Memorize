@@ -10,10 +10,12 @@ import Foundation
 
 struct MemoryGame<CardContent> {
     
-    struct Card {
+    struct Card: Identifiable {
         var isFaceUp: Bool = false
         var isMatched: Bool = false
+        var id: UUID = UUID()
         var content: CardContent
+        
     }
     
     private(set) var cards: [Card]
