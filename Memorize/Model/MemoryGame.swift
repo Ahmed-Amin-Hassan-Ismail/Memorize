@@ -9,10 +9,10 @@ import Foundation
 import SwiftUI
 
 
-struct MemoryGame<CardContent> {
+struct MemoryGame<CardContent> where CardContent: Equatable {
     
     struct Card: Identifiable {
-        var isFaceUp: Bool = true
+        var isFaceUp: Bool = false
         var isMatched: Bool = false
         var content: CardContent
         var id: Int
@@ -20,6 +20,7 @@ struct MemoryGame<CardContent> {
     }
     
     private(set) var cards: [Card]
+    private var indexOfOneAndOnlyFaceUpCard: Int?
     
     init(numberOfPairsOfCard: Int, createCardContent: (Int) -> CardContent) {
         self.cards = []
@@ -31,17 +32,22 @@ struct MemoryGame<CardContent> {
     }
     
     mutating func choose(_ card: Card) {
-        let choosenIndex = index(of: card)
-        cards[choosenIndex].isFaceUp.toggle()
-    }
-    
-    func index(of card: Card) -> Int {
-        for index in 0..<cards.count {
-            if cards[index].id == card.id  {
-                return index
+        if let choosenIndex = cards.firstIndex(where: { $0.id == card.id }),
+           !cards[choosenIndex].isFaceUp,
+           !cards[choosenIndex].isMatched {
+            if let potentialMatch = indexOfOneAndOnlyFaceUpCard {
+                if cards[choosenIndex].content == cards[potentialMatch].content {
+                    cards[choosenIndex].isMatched = true
+                    cards[potentialMatch].isMatched = true
+                }
+                indexOfOneAndOnlyFaceUpCard = nil
+            } else {
+                for index in cards.indices {
+                    cards[index].isFaceUp = false
+                }
+                indexOfOneAndOnlyFaceUpCard = choosenIndex
             }
+            cards[choosenIndex].isFaceUp.toggle()
         }
-        return 0 // bougs
     }
-    
 }
